@@ -1,0 +1,31 @@
+<nav class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand" href="/">
+    <img src="https://i.imgur.com/vmdGjqG.png" width="40" height="30 class="d-inline-block align-top" alt="">
+    My Shopp
+  </a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+    <ul class="nav nav-pills">
+      <li role="presentation" class="active"><a href="/">Home</a></li>
+      <li role="presentation"><%= link_to "Categories", categories_path%></li>
+      <% if user_signed_in? %>
+        <li role="presentation"><%= link_to "Cart", cart_path(current_user.cart) if current_user.cart && current_user.cart.line_items != []%></li>
+        <p class="navbar-text navbar-right text-muted">Signed in as <%= current_user.email %></p>
+        <% if current_user.admin %>
+          <li role="presentation"><%= link_to "Admin", admin_index_path %></li>
+        <% else %>
+           <li role="presentation"><%= link_to "Orders", orders_path if current_user.orders != []%></li>
+        <% end %>
+        <li role="presentation"><%= link_to "Log Out", destroy_user_session_path, method: :delete %>
+      <% else %>
+        <li role="presentation"><%= link_to "Sign In",  new_user_session_path %></li>
+        <li role="presentation"><%= link_to "Sign in with Facebook", user_facebook_omniauth_authorize_path %></li>
+
+      <% end %>
+    </ul>
+</nav>
+</nav>
+

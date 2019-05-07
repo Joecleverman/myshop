@@ -1,0 +1,72 @@
+<h1><%= @item.name %></h1>
+
+<div class= "row">
+  <div class="col-sm-6 col-md-4 ">
+     <%= render 'image', locals: @item %>
+    <div class="card">
+      <%= render 'item', locals: @item %>
+    </div>
+  </div>
+</div>
+
+<br>
+
+<% if @item.comments != [] %>
+  <h4><a href="#" id="js-comments" data-id="<%= @item.id %>">Show Comments</a></h4>
+<% end %>
+
+<div id="js-view-comments">
+</div>
+
+<% if current_user %>
+  <%= render 'comment_form', locals: @comment %>
+<% end %>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    $('#js-comments').click(function(e){
+      e.preventDefault();
+      const id = $(this).data("id")
+      $.getJSON(`/items/${id}`, function(itemData) {
+        const comments = itemData['comments']
+        let commentsList = "";
+
+        comments.sort(function(a, b){
+          let dateA = new Date(a.created_at)
+          let dateB = new Date(b.created_at)
+
+          if (dateA > dateB) {
+            return -1
+          } else {
+            return 1
+          }
+        });
+
+        comments.forEach(function (commentData) {
+          const comment = new Comment(commentData);
+          commentsList += comment.buildHtml();
+        })
+
+        $('#js-view-comments').html(commentsList);
+      });
+    });
+  });
+</script>
+
+<script type="text/javascript" charset="utf-8">
+  $(function () {
+    $('form#new_comment').on("submit", function(event) {
+      event.preventDefault();
+      const values = $(this).serialize();
+      const posting = $.post('/comments', values);
+
+      posting.done(function(commentData) {
+        const comment = new Comment(commentData)
+        const commentFormat = comment.buildHtml();
+        $('#js-view-comments').append(commentFormat);
+        document.getElementById('submit-comment').disabled = false;
+        $('#comment_text').val('');
+      });
+    });
+  });
+</script>
