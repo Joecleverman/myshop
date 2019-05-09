@@ -52,7 +52,7 @@ class CategoriesController < ApplicationController
     params.require(:category).permit(:name)
   end
 
-  def set_category
-    @category = Category.find_by(id: params[:id])
-  end
-end
+#   def set_category
+#     @category = Category.find_by(id: params[:id])
+#   end
+# end
